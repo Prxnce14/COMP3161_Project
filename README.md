@@ -59,14 +59,11 @@ Sample data for Register User
 
 Postman- Post Requesuest- Body - Raw - Json
 
-
 {
-    "Username": "your name",
-    "Password": "you password",
-    "Account_type": "Student"
+    "Id_Number": 6200000,
+    "Username": "Nicholas",
+    "Password": "my_password14"
 }
-
-
 
 
 

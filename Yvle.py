@@ -24,6 +24,7 @@ def register_user():
         u_id = content['Id_Number']
         u_name = content['Username']
         p_word = content['Password']
+        #Insert code to test against existing records
         cur.execute(f"INSERT INTO User VALUES('{u_id}','{u_name}','{p_word}')")
         con.commit()    
         cur.close()
@@ -40,15 +41,22 @@ def register_user():
 #User Login
 @Yvle.route('/user_login', methods=['POST'])
 def user_login():
-    u_name = request.json.get('Username')
-    p_word = request.json.get('Password')
-    
-    # Find the user
-    for user in users:
-        if user['Username'] == u_name and user['Password'] == p_word:
-            return jsonify({'message': 'Login was successful', 'account_type': user['account_type']}), 200
-        else:
-            return jsonify({'error': 'Invalid'}), 401
+    try:
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        content = request.json
+        u_id = content['Id_Number']
+        p_word = content['Password']
+        
+        # write code to test if the user information entered == user info in database
+
+        
+    except Exception as e:
+        print(e)
+        return make_response({'error': 'An error has occured'}, 400)
 
 
 
