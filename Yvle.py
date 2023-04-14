@@ -1,6 +1,7 @@
 #Register User
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
+import mysql.connector
 
 Yvle = Flask(__name__)
 
@@ -13,21 +14,26 @@ def tester():
 
 @Yvle.route('/register_user', methods=['POST'])
 def register_user():
-
-    u_name = request.json.get('Username')
-    p_word = request.json.get('Password')
-    acc_type = request.json.get('Account_type')
+    try:
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        content = request.json
+        u_id = content['Id_Number']
+        u_name = content['Username']
+        p_word = content['Password']
+        cur.execute(f"INSERT INTO User VALUES('{u_id}','{u_name}','{p_word}')")
+        con.commit()    
+        cur.close()
+        con.close()
+        return make_response(jsonify({'message': 'User has been registered successfully'}), 201)
     
-    # Check if the user already exists
-    for user in users:
-        if user['Username'] == u_name:
-            return jsonify({'error': 'User already exists! Try again'}), 400
+    except Exception as e:
+        print(e)
+        return make_response({'error': 'An error has occured'}, 400)
     
-    # Create a new user
-    user = {'Username': u_name, 'Password': p_word, 'Account_type': acc_type}
-    users.append(user)
-    
-    return jsonify({'message': 'User has been registered successfully'}), 201
 
 
 

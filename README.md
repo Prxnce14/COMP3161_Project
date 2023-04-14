@@ -48,9 +48,6 @@ Accitvate server
 flask --app Yvle.py --debug run
 
 
-
-
-
 database information
 
 (user='project1_user', password ='password123',host = '127.0.0.1', database = 'Yvle')
