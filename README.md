@@ -37,6 +37,18 @@ from flask import Flask
 Starting  you server:  
 
 flask --app <name of python file>.py --debug run
+_________________________________________________________________________________
+
+Switch to current environmnet:
+
+Yvle_env\Scripts\activate
+
+Accitvate server
+
+flask --app Yvle.py --debug run
+
+
+
 
 
 database information
