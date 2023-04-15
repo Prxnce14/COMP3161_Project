@@ -3,6 +3,9 @@ USE Yvle;
 
 -- DROP DATABASE Yvle;
 
+SELECT * FROM User;
+
+
 CREATE TABLE User(
 User_id int NOT NULL,
 Username varchar(255) NOT NULL,
@@ -22,8 +25,10 @@ FOREIGN KEY (User_id) REFERENCES User(User_id)
 CREATE TABLE Member(
 Member_id varchar(255) NOT NULL,
 User_id int NOT NULL,
+Course_id varchar(255) NOT NULL,
 PRIMARY KEY (Member_id),
-FOREIGN KEY (User_id) REFERENCES User(User_id)  
+FOREIGN KEY (User_id) REFERENCES User(User_id),
+FOREIGN KEY (Course_id) REFERENCES Course (Course_id)
 );
 
 CREATE TABLE Student(
@@ -101,8 +106,13 @@ CREATE TABLE CourseContent(
 Content_id varchar(255) NOT NULL,
 Content_name varchar(255) NOT NULL,
 Course_id varchar(255) NOT NULL,
+Content_type VARCHAR(255) NOT NULL,
+Lecturer_id varchar(255) NOT NULL,
+Section_id varchar(255) NOT NULL,
 PRIMARY KEY (Content_id),
-FOREIGN KEY (Course_id)  REFERENCES Course(Course_id) 
+FOREIGN KEY (Course_id)  REFERENCES Course(Course_id),
+FOREIGN KEY (Lecturer_id) REFERENCES Lecture(Lecturer_id),
+FOREIGN KEY (Section_id) REFERENCES Section(Section_id) 
 );
 
 CREATE TABLE Assignment(
@@ -145,7 +155,6 @@ FOREIGN KEY (Dept_id) REFERENCES Department(Dept_id)
 CREATE TABLE Enrol(
 Student_id varchar(255) NOT NULL,
 Course_id varchar(255) NOT NULL,
-Grade INT NOT NULL,
 PRIMARY KEY ( Student_id, Course_id), 
 FOREIGN KEY (Student_id) REFERENCES Student(Student_id),
 FOREIGN KEY (Course_id) REFERENCES Course (Course_id)
