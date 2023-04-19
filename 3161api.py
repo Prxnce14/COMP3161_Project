@@ -32,10 +32,6 @@ def register():
 
 
 #Add course
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 @app.route('/add_course', methods=['POST'])
 def add_course():
@@ -70,10 +66,6 @@ def add_course():
 
 
 #Get course
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 @app.route('/courses', methods=['GET'])
 def get_courses():
@@ -108,10 +100,6 @@ def get_courses():
 
 
 #Register for a course
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 @app.route('/register_course', methods=['POST'])
 def register_course():
@@ -157,10 +145,6 @@ def register_course():
         return make_response(jsonify({'error': 'An error occurred while registering for the course'}), 500)
 
 #Retrieve members
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 @app.route('/members/<int:c_id>', methods=['GET'])
 def get_members(c_id):
@@ -185,10 +169,6 @@ def get_members(c_id):
 
     
     
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 # Connect to the database
 con = mysql.connector.connect(user='admin', password='password', host='localhost', database='yvle')
@@ -230,14 +210,10 @@ def create_forum():
         return make_response(jsonify({'error': 'An error occurred while creating the forum'}), 500)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
 
 
 
-from flask import Flask, jsonify, request, make_response
-import mysql.connector
-
-app = Flask(__name__)
 
 # Connect to the database
 con = mysql.connector.connect(user='admin', password='password', host='localhost', database='yvle')
@@ -301,6 +277,6 @@ def add_reply(thread_id):
         return make_response(jsonify({'error': 'An error occurred while adding the reply'}), 500)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
 
 
