@@ -179,5 +179,122 @@ def get_members(c_id):
 
     
     
+from flask import Flask, jsonify, request, make_response
+import mysql.connector
+
+app = Flask(__name__)
+
+# Connect to the database
+con = mysql.connector.connect(user='admin', password='password', host='localhost', database='yvle')
+cursor = con.cursor()
+
+# Endpoint to retrieve all the forums for a particular course
+@app.route('/discussionforums/<int:c_id>', methods=['GET'])
+def get_forums(c_id):
+    try:
+        # Query the database for all forums for the specified course
+        cursor.execute(f"SELECT * FROM forums WHERE c_id = {c_id}")
+        discussionforums = cursor.fetchall()
+
+        # Return the forums as JSON
+        return jsonify(discussionforums), 200
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retrieving the forums'}), 500)
+
+# Endpoint to create a forum for a particular course
+@app.route('/forums', methods=['POST'])
+def create_forum():
+    try:
+        # Get the forum details from the request body
+        content = request.json
+        c_id = content['c_id']
+        forum_id = content['forum_id']
+        forum_name = content['forum_name']
+
+        # Insert the forum into the database
+        cursor.execute(f"INSERT INTO discussionforums (c_id, forum_name) VALUES ({c_id}, '{forum_id}','{forum_name}')")
+        con.commit()
+
+        return make_response(jsonify({'message': 'Forum created successfully'}), 201)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while creating the forum'}), 500)
+
+if __name__ == '__main__':
+    app.run()
+
+
+
+from flask import Flask, jsonify, request, make_response
+import mysql.connector
+
+app = Flask(__name__)
+
+# Connect to the database
+con = mysql.connector.connect(user='admin', password='password', host='localhost', database='yvle')
+cursor = con.cursor()
+
+# Endpoint to retrieve all the discussion threads for a particular forum
+@app.route('/discussionthreads/<int:forum_id>', methods=['GET'])
+def get_discussion_threads(forum_id):
+    try:
+        # Query the database for all discussion threads for the specified forum
+        cursor.execute(f"SELECT * FROM discussion_threads WHERE forum_id = {forum_id}")
+        discussion_threads = cursor.fetchall()
+
+        # Return the discussion threads as JSON
+        return jsonify(discussion_threads), 200
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retrieving the discussion threads'}), 500)
+
+# Endpoint to add a new discussion thread to a forum
+@app.route('/discussionthreads', methods=['POST'])
+def create_discussion_thread():
+    try:
+        # Get the discussion thread details from the request body
+        content = request.json
+        thread_id = content['thread_id']
+        forum_id = content['forum_id']
+        user_id = content['user_id']
+        thread_title = content['thread_title']
+        thread_content = content['thread_content']
+
+        # Insert the discussion thread into the database
+        cursor.execute(f"INSERT INTO discussion_threads (thread_id, forum_id, user_id, thread_title, thread_content) VALUES ({thread_id},'{forum_id}','{user_id}', '{thread_title}', '{thread_content}')")
+        con.commit()
+
+        return make_response(jsonify({'message': 'Discussion thread created successfully'}), 201)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while creating the discussion thread'}), 500)
+
+# Endpoint to add a new reply to a discussion thread
+@app.route('/discussionthreads/<int:thread_id>/replies', methods=['POST'])
+def add_reply(thread_id):
+    try:
+        # Get the reply details from the request body
+        content = request.json
+        user_id = content['user_id']
+        thread_content = content['thread_content']
+        thread_id = content.get('thread_id', None)
+
+        # Insert the reply into the database
+        cursor.execute(f"INSERT INTO replies (thread_id, user_id, thread_content, thread_id) VALUES ({thread_id}, {user_id}, '{thread_content}', {thread_id})")
+        con.commit()
+
+        return make_response(jsonify({'message': 'Reply added successfully'}), 201)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while adding the reply'}), 500)
+
+if __name__ == '__main__':
+    app.run()
 
 
