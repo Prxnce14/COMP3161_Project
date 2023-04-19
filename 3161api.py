@@ -1,3 +1,9 @@
+#Register user
+from flask import Flask, jsonify, request, make_response
+import mysql.connector
+
+app = Flask(__name__)
+
 @app.route('/register', methods=['POST'])
 def register():
     # Parse request data
