@@ -5,6 +5,9 @@ USE Yvle;
 
 SELECT * FROM User;
 
+SELECT * FROM User WHERE user_id = 6200000 
+HAVING Password = 'my_password14';
+
 
 CREATE TABLE User(
 User_id int NOT NULL,
