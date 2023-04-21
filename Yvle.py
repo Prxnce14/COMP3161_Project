@@ -75,7 +75,7 @@ def add_course():
                                     host = '127.0.0.1',
                                     database = 'Yvle')
         #this cretaes a cursor
-        cursor = con.cursor()
+        cur = con.cursor()
 
         # check if user is an admin
         # auth_header = request.headers.get('Authorization')
@@ -89,10 +89,9 @@ def add_course():
         lec_id = content['Lecturer_id']
 
         # insert course into database
-        cursor.execute(f"INSERT INTO course (Course_id, c_name, Lecture_id) VALUES ('{c_id}', '{c_name}', '{lec_id}')")
+        cur.execute(f"INSERT INTO course (Course_id, c_name, Lecture_id) VALUES ('{c_id}', '{c_name}', '{lec_id}')")
         con.commit()
-
-        cursor.close()
+        cur.close()
         con.close()
         return make_response(jsonify({'message': 'Course created successfully'}), 201)
 
