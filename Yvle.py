@@ -66,3 +66,36 @@ def user_login(u_id, pass_word): #<pass_word>
         return make_response({'error': str(e)}, 400) 
     
 
+
+@Yvle.route('/add_course', methods=['POST'])
+def add_course():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cursor = con.cursor()
+
+        # check if user is an admin
+        # auth_header = request.headers.get('Authorization')
+        # if auth_header != 'Bearer admin_token':
+        #     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
+
+        # get course details from request body
+        content = request.json
+        c_id = content['Course_id']
+        c_name = content['Course_name']
+        lec_id = content['Lecturer_id']
+
+        # insert course into database
+        cursor.execute(f"INSERT INTO course (Course_id, c_name, Lecture_id) VALUES ('{c_id}', '{c_name}', '{lec_id}')")
+        con.commit()
+
+        cursor.close()
+        con.close()
+        return make_response(jsonify({'message': 'Course created successfully'}), 201)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while creating the course'}), 500)
