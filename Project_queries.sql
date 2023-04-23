@@ -28,6 +28,27 @@ INSERT INTO yvle.Student (Student_id, Name, User_id) VALUES ('6601440755', 'Robe
 INSERT INTO Course (Course_id, Course_Name, Course_admin) VALUES ('ARTS500', 'Contemporary Art Criticism', '98594');
 INSERT INTO Lecture (Lecturer_id, Name, User_id) VALUES ('8762052873', 'Adam Harper', 34874);
 
+DROP TABLE User;
+DROP TABLE Account;
+DROP TABLE Member;
+DROP TABLE Student;
+DROP TABLE Lecture;
+DROP TABLE Course;
+DROP TABLE DiscussionForum;
+DROP TABLE DiscussionThread;
+DROP TABLE CalendarEvent;
+DROP TABLE Section;
+DROP TABLE SectionItem;
+DROP TABLE CourseContent;
+DROP TABLE Assignment; 
+DROP TABLE Grade;
+DROP TABLE Department;
+DROP TABLE  Program;
+DROP TABLE Enrol;
+DROP TABLE Must_take;
+DROP TABLE Teach_connect;
+
+
 
 CREATE TABLE User(
 User_id INT NOT NULL,
@@ -40,7 +61,7 @@ CREATE TABLE Account(
 Account_name varchar(255) NOT NULL,
 Account_type varchar(255) NOT NULL,
 User_id INT NOT NULL,
-PRIMARY KEY (Account_name),
+PRIMARY KEY (User_id),
 FOREIGN KEY (User_id) REFERENCES User(User_id)
 
 );
@@ -49,7 +70,7 @@ CREATE TABLE Member(
 Member_id varchar(255) NOT NULL,
 User_id INT NOT NULL,
 Course_id varchar(255) NOT NULL,
-PRIMARY KEY (Member_id),
+PRIMARY KEY (Member_id, Course_id),
 FOREIGN KEY (User_id) REFERENCES User(User_id),
 FOREIGN KEY (Course_id) REFERENCES Course (Course_id)
 );
