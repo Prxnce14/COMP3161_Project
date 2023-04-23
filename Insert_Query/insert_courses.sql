@@ -197,4 +197,4 @@ INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('PSYC401'
 INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('PSYC801', 'Cognitive Neuroscience', '93982');
 INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('SOC801', 'Social Movements', '96500');
 INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('SPAN801', 'Advanced Spanish Composition', '93010');
-INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('WGS401', 'Women's and Gender Studies', '94511');
+INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('WGS401', 'Women and Gender Studies', '94511');
