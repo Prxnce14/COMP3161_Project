@@ -86,10 +86,10 @@ def add_course():
         content = request.json
         c_id = content['Course_id']
         c_name = content['Course_name']
-        lec_id = content['Lecturer_id']
+        Adm_id = content['Admin_id']
 
         # insert course into database
-        cur.execute(f"INSERT INTO course (Course_id, c_name, Lecture_id) VALUES ('{c_id}', '{c_name}', '{lec_id}')")
+        cur.execute(f"INSERT INTO Course (Course_id, Course_Name, Course_admin) VALUES ('{c_id}', '{c_name}', '{Adm_id}')")
         con.commit()
         cur.close()
         con.close()
@@ -97,4 +97,6 @@ def add_course():
 
     except Exception as e:
         print(e)
-        return make_response(jsonify({'error': 'An error occurred while creating the course'}), 500)
+        return make_response({'error': str(e)}, 400) 
+    
+        #return make_response(jsonify({'error': 'An error occurred while creating the course'}), 500)

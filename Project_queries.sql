@@ -4,13 +4,33 @@ USE Yvle;
 -- DROP DATABASE Yvle;
 
 SELECT * FROM User;
+SELECT * FROM Course;
+SELECT * FROM Member;
+SELECT * FROM Lecture;
+
+ALTER TABLE Member
+ADD Course_id VARCHAR(255);
 
 SELECT * FROM User WHERE user_id = 6200000 
 HAVING Password = 'my_password14';
 
+DELETE FROM User WHERE Username LIKE '%4178265050%' ;
+
+ALTER TABLE Course
+RENAME COLUMN C_name TO Course_Name;
+
+INSERT INTO yvle.User (User_id, Username, Password) VALUES ('56151', '4178265050', 'WVJFFmrj');
+INSERT INTO yvle.User (User_id, Username, Password) VALUES ('56153', '4178265050', 'WVJFFmrj');
+INSERT INTO yvle.Account (Account_name, Account_type, User_id) VALUES ('Belinda Riley', 'Admin', '56152');
+INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('8386875367', 62000, 'ARTS500');
+INSERT INTO yvle.Student (Student_id, Name, User_id) VALUES ('6601440755', 'Robert Summers', '56119');
+
+INSERT INTO Course (Course_id, Course_Name, Course_admin) VALUES ('ARTS500', 'Contemporary Art Criticism', '98594');
+INSERT INTO Lecture (Lecturer_id, Name, User_id) VALUES ('8762052873', 'Adam Harper', 34874);
+
 
 CREATE TABLE User(
-User_id int NOT NULL,
+User_id INT NOT NULL,
 Username varchar(255) NOT NULL,
 Password varchar(255) NOT NULL,
 PRIMARY KEY (User_id)
@@ -27,7 +47,7 @@ FOREIGN KEY (User_id) REFERENCES User(User_id)
 
 CREATE TABLE Member(
 Member_id varchar(255) NOT NULL,
-User_id int NOT NULL,
+User_id INT NOT NULL,
 Course_id varchar(255) NOT NULL,
 PRIMARY KEY (Member_id),
 FOREIGN KEY (User_id) REFERENCES User(User_id),
@@ -35,27 +55,27 @@ FOREIGN KEY (Course_id) REFERENCES Course (Course_id)
 );
 
 CREATE TABLE Student(
-Student_id varchar(255) NOT NULL,
+Student_id INT NOT NULL,
 Name varchar(255) NOT NULL,
-User_id int NOT NULL,
+User_id INT NOT NULL,
 PRIMARY KEY (Student_id),
 FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
-CREATE TABLE Lecture(
-Lecturer_id varchar(255) NOT NULL,
+CREATE TABLE Lecturer(
+Lecturer_id INT NOT NULL,
 Name varchar(255) NOT NULL,
-User_id int NOT NULL,
+User_id INT NOT NULL,
 PRIMARY KEY (Lecturer_id),
 FOREIGN KEY (User_id) REFERENCES User(User_id)
 );
 
 CREATE TABLE Course(
 Course_id varchar(255) NOT NULL,
-C_name varchar(255) NOT NULL,
-Lecture_id varchar(255) NOT NULL,
+Course_Name varchar(255) NOT NULL,
+Course_admin INT NOT NULL,
 PRIMARY KEY (Course_id),
-FOREIGN KEY (Lecture_id) REFERENCES Lecture(Lecturer_id)
+FOREIGN KEY (Course_admin) REFERENCES Lecturer(User_id)
 );
 
 CREATE TABLE DiscussionForum(
@@ -110,11 +130,11 @@ Content_id varchar(255) NOT NULL,
 Content_name varchar(255) NOT NULL,
 Course_id varchar(255) NOT NULL,
 Content_type VARCHAR(255) NOT NULL,
-Lecturer_id varchar(255) NOT NULL,
+Lecture_id varchar(255) NOT NULL,
 Section_id varchar(255) NOT NULL,
 PRIMARY KEY (Content_id),
 FOREIGN KEY (Course_id)  REFERENCES Course(Course_id),
-FOREIGN KEY (Lecturer_id) REFERENCES Lecture(Lecturer_id),
+FOREIGN KEY (Lecture_id) REFERENCES Lecture(Lecturer_id),
 FOREIGN KEY (Section_id) REFERENCES Section(Section_id) 
 );
 
@@ -156,7 +176,7 @@ FOREIGN KEY (Dept_id) REFERENCES Department(Dept_id)
 
 
 CREATE TABLE Enrol(
-Student_id varchar(255) NOT NULL,
+Student_id INT NOT NULL,
 Course_id varchar(255) NOT NULL,
 PRIMARY KEY ( Student_id, Course_id), 
 FOREIGN KEY (Student_id) REFERENCES Student(Student_id),
@@ -178,7 +198,7 @@ Course_id varchar(255) NOT NULL,
 Lecturer_id varchar(255) NOT NULL,
 PRIMARY KEY (Course_id,Lecturer_id),
 FOREIGN KEY (Course_id) REFERENCES Course (Course_id),
-FOREIGN KEY (Lecturer_id) REFERENCES Lecture(Lecturer_id)
+FOREIGN KEY (Lecturer_id) REFERENCES Lecturer(Lecturer_id)
 );
 
 
