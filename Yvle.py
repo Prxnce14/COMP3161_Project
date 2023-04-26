@@ -25,7 +25,7 @@ def register_user():
         u_name = content['Username']
         p_word = content['Password']
         #Insert code to test against existing records
-        cur.execute(f"INSERT INTO User VALUES('{u_id}','{u_name}','{p_word}')")
+        cur.execute(f"INSERT INTO User (User_id, Username, Password) VALUES('{u_id}','{u_name}','{p_word}')")
         con.commit()    
         cur.close()
         con.close()
@@ -100,3 +100,83 @@ def add_course():
         return make_response({'error': str(e)}, 400) 
     
         #return make_response(jsonify({'error': 'An error occurred while creating the course'}), 500)
+
+
+
+@Yvle.route('/get_courses', methods=['GET'])
+def get_courses():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        cur.execute('SELECT Course_id, Course_Name FROM course;')
+        c_list = []
+        for c_id, c_name in cur:
+            courses={}
+            courses['Course Id'] = c_id
+            courses['Course Name']= c_name
+            c_list.append(courses)
+        cur.close()
+        con.close()
+        return c_list
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+
+@Yvle.route('/get_stud_courses/<stud_id>', methods=['GET'])
+def get_stud_courses(stud_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT course.Course_id, course.Course_Name FROM course \
+                     JOIN Enrol ON course.Course_id = Enrol.Course_id JOIN Student on Student.Student_id = Enrol.Student_id\
+                     WHERE Student.Student_id = {stud_id};')
+        sc_list= []
+        for c_id, c_name in cur:
+            courses={}
+            courses['Course Id'] = c_id
+            courses['Course Name']= c_name
+            sc_list.append(courses)
+        cur.close()
+        con.close()
+        return sc_list
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+    
+@Yvle.route('/get_lec_courses/<lec_id>', methods=['GET'])
+def get_lec_courses(lec_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT course.Course_id, course.Course_Name FROM course JOIN \
+                    Lecturer ON course.Course_admin = Lecturer.User_id WHERE Lecturer.User_id ={lec_id};')
+        lc_list= []
+        for c_id, c_name in cur:
+            courses={}
+            courses['Course Id'] = c_id 
+            courses['Course Name']= c_name
+            lc_list.append(courses)
+        cur.close()
+        con.close()
+        return lc_list
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+    
+
