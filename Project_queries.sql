@@ -28,8 +28,6 @@ SELECT * FROM Teach_connect;
 SELECT * FROM User WHERE user_id = 6200000 
 HAVING Password = 'my_password14';
 
-DELETE FROM User WHERE Username LIKE '%4178265050%' ;
-
 
 INSERT INTO yvle.User (User_id, Username, Password) VALUES ('56153', '4178265049', 'WVJFFmrl');
 INSERT INTO yvle.User (User_id, Username, Password) VALUES ('51772', '4960858992', 'OFv2fCOr');
@@ -80,6 +78,26 @@ INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES ('6601440755', 'ARTS500');
 -- Insert query for must_take
 
 INSERT INTO yvle.Teach_connect (Course_id, Lecturer_ID) VALUES ('ACCT501', '8762052873');
+
+
+SELECT Course_id, Course_Name FROM course;
+
+SELECT course.Course_id, course.Course_Name FROM course JOIN Enrol ON course.Course_id = Enrol.Course_id JOIN 
+Student on Student.Student_id = Enrol.Student_id WHERE Student.Student_id = 6601440755;
+
+SELECT course.Course_id, course.Course_Name FROM course JOIN Lecturer ON course.Course_admin = Lecturer.User_id 
+WHERE Lecturer.User_id = 51772;
+
+
+CREATE VIEW Course50 AS 
+SELECT Course_id, COUNT(*) AS num_students
+FROM Enrol
+GROUP BY Course_id
+HAVING COUNT(*) > 50;
+
+
+
+
 
 
 
