@@ -179,4 +179,84 @@ def get_lec_courses(lec_id):
         return make_response({'error': str(e)}, 400)
     
     
+@Yvle.route('/register_course', methods=['POST'])
+def register_course():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        cur = con.cursor()
+        # check if user is a student
+        # auth_header = request.headers.get('Authorization')
+        # if not auth_header.startswith('Bearer student_token'):
+        #     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
+        # get course id from request body
+        content = request.json
+        
+        stud_name = content['Student Name']
+        stud_id = content['Student ID']
+        c_id = content['Course ID']
+        adm_id = content['Admin ID']
+
+
+        # check if course exists
+        cur.execute(f"SELECT * FROM course WHERE course.Course_id = '{c_id}'")
+        course = cur.fetchone()
+        if not course:
+            return make_response(jsonify({'error': 'Course not found'}), 404)
+
+        # check if student is already registered for the course
+        # student_id = auth_header.split()[1]
+        cur.execute(f"SELECT * FROM Student JOIN Enrol on Student.Student_id = Enrol.Student_id JOIN \
+                        course on course.Course_id = Enrol.Course_id where Student.Student_id = '{stud_id}' and \
+                        course.Course_id = '{c_id}'")
+        existing_registration = cur.fetchone()
+        if existing_registration:
+            return make_response(jsonify({'error': 'Student already registered for the course'}), 409)
+        else :
+
+            # register student for the course
+            cur.execute(f"INSERT INTO yvle.Student (Student_id, Name, User_id) VALUES ('{stud_id}', '{stud_name}', '{adm_id}');")
+
+            cur.execute(f"INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES ('{stud_id}', '{c_id}');")
+
+            cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{stud_id}', '{adm_id}', '{c_id}');")
+
+        con.commit()
+        cur.close()
+        con.close()
+        return make_response(jsonify({'message': 'Student Succesfully registered and enrolled'}), 201)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while registering for the course'}), 500)
+
+
+
+
+@Yvle.route('/get_members/<course_id>', methods=['GET'])
+def get_members(course_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        cur.execute(f"SELECT * FROM Member WHERE Member.Course_id = '{course_id}' ;")
+        mem_list = []
+        
+        for memb_id, u_id, c_id in cur:
+            Member = {}
+            Member['Member ID'] = memb_id
+            Member['User ID'] = u_id
+            Member['Course ID'] = c_id
+            mem_list.append(Member)
+        cur.close()
+        con.close()
+        return mem_list
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
