@@ -187,11 +187,7 @@ def register_course():
                                     host = '127.0.0.1',
                                     database = 'Yvle')
         cur = con.cursor()
-        # check if user is a student
-        # auth_header = request.headers.get('Authorization')
-        # if not auth_header.startswith('Bearer student_token'):
-        #     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
-
+        
         # get course id from request body
         content = request.json
         
@@ -207,8 +203,6 @@ def register_course():
         if not course:
             return make_response(jsonify({'error': 'Course not found'}), 404)
 
-        # check if student is already registered for the course
-        # student_id = auth_header.split()[1]
         cur.execute(f"SELECT * FROM Student JOIN Enrol on Student.Student_id = Enrol.Student_id JOIN \
                         course on course.Course_id = Enrol.Course_id where Student.Student_id = '{stud_id}' and \
                         course.Course_id = '{c_id}'")
@@ -260,3 +254,264 @@ def get_members(course_id):
     
     except Exception as e:
         return make_response({'error': str(e)}, 400)
+    
+
+
+
+@Yvle.route('/get_cevent/<course_id>', methods = ['GET'])
+def get_cevent(course_id):
+    try:
+         # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT * FROM CalendarEvent WHERE CalendarEvent.Course_id = {course_id};')
+        row = cur.fetchone()
+        #customer = {}
+        if row is not None:
+            event_id, event_name, event_des,event_date, c_id = row
+            calendar = {}
+            calendar['Event ID'] = event_id
+            calendar['Event Name'] = event_name
+            calendar['Event Description'] = event_des
+            calendar['Event Date'] = event_date
+            calendar['Course Id'] = c_id
+            cur.close()
+            con.close()
+            return make_response(calendar, 200)
+        else:
+            return make_response({'error': 'Calendar event not found'}, 400)
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+
+
+@Yvle.route('/get_cevent_stud/<stud_id>/<event_date>', methods = ['GET'])
+def get_cevent_stud(stud_id,event_date):
+    try:
+         # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT * FROM CalendarEvent JOIN Enrol on CalendarEvent.Course_id = Enrol.Course_id \
+                    WHERE Enrol.Student_id = {stud_id} and CalendarEvent.Event_date = {event_date};')
+        row = cur.fetchone()
+        #customer = {}
+        if row is not None:
+            event_id, event_name, event_des,event_date, c_id, sid, c_id = row
+            calendar = {}
+            calendar['Event ID'] = event_id
+            calendar['Event Name'] = event_name
+            calendar['Event Description'] = event_des
+            calendar['Event Date'] = event_date
+            calendar['Course Id'] = c_id
+            calendar['Student ID'] = sid
+            cur.close()
+            con.close()
+            return make_response(calendar, 200)
+        else:
+            return make_response({'error': 'Calendar event not found'}, 400)
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+        
+
+
+
+@Yvle.route('/Create_cal_event', methods=['POST'])
+def Create_cal_event():
+    try:
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        content = request.json
+        event_id = content['Event ID']
+        event_name = content['Event Name']
+        event_des = content['Event Description']
+        event_date = content['Event Date']
+        event_course = content['Course Id']
+    
+        cur.execute(f"INSERT INTO yvle.CalendarEvent (Event_id, Event_name, Event_description, Event_date, Course_id) VALUES \
+                    ('{event_id}', '{event_name}', '{event_des}', '{event_date}', '{event_course}');")
+        con.commit()    
+        cur.close()
+        con.close()
+        return make_response({'message': 'Calendar Event created'}, 200)
+    
+    except Exception as e:
+        print(e)
+        return make_response({'error': str(e)}, 400)
+
+
+
+    
+
+@Yvle.route('/get_dsic_forums/<course_id>', methods=['GET'])
+def get_dsic_forums(course_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        cur.execute(f"SELECT * FROM DiscussionForum WHERE DiscussionForum.Course_id = '{course_id}' ;")
+        forum_list = []
+        
+        for forum_id, forum_name, c_id in cur:
+            Forum = {}
+            Forum['Forum ID'] = forum_id
+            Forum['Forum Name'] = forum_name
+            Forum['Course ID'] = c_id
+            forum_list.append(Forum)
+        cur.close()
+        con.close()
+        return forum_list
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+
+
+@Yvle.route('/Create_forum', methods=['POST'])
+def Create_forum():
+    try:
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        content = request.json
+        forum_id = content['Forum ID']
+        forum_name = content['Forum Name']
+        c_id = content['Course ID']
+        
+        cur.execute(f"INSERT INTO yvle.DiscussionForum (Forum_id, Forum_name, Course_id) VALUES \
+                    ('{forum_id}', '{forum_name}', '{c_id}');")
+        con.commit()    
+        cur.close()
+        con.close()
+        return make_response({'message': 'Discussion Forum created'}, 200)
+    
+    except Exception as e:
+        print(e)
+        return make_response({'error': str(e)}, 400)
+    
+
+
+    
+@Yvle.route('/get_disc_thread/<for_id>', methods=['GET'])
+def get_disc_thread(for_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this cretaes a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT DiscussionThread.Thread_id, DiscussionThread.Thread_Title, DiscussionThread.Thread_content, \
+                      DiscussionThread.User_id, DiscussionThread.Forum_id FROM DiscussionThread \
+                        JOIN DiscussionForum ON DiscussionThread.Forum_id = DiscussionForum.Forum_id \
+                        WHERE DiscussionForum.Forum_id = {for_id};')
+        frum_list= []
+        for tr_id, tr_title, tr_content, tr_uid, tr_fid in cur:
+            Threads={}
+            Threads['Thread ID'] = tr_id 
+            Threads['Thread Title']= tr_title
+            Threads['Thread Content'] = tr_content
+            Threads['User ID'] = tr_uid
+            Threads['Forum ID'] = tr_fid
+            frum_list.append(Threads)
+        cur.close()
+        con.close()
+        return frum_list
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+
+
+
+# @Yvle.route('/Create_thread', methods=['POST'])
+# def Create_thread():
+#     try:
+#         # connect to database
+#         con = mysql.connector.connect(user='project1_user', password ='password123',
+#                                     host = '127.0.0.1',
+#                                     database = 'Yvle')
+#         cur = con.cursor()
+        
+#         # get discussio thread from request body
+#         content = request.json
+        
+#         tr_id = content['Thread ID']
+#         tr_title = content['Thread Title']
+#         tr_content = content['Thread Content']
+#         tr_uid = content['User ID']
+#         tr_fid = content['Forum ID']
+
+
+#         # check if forum exists
+
+#         cur.execute(f"SELECT DiscussionThread.Thread_id, DiscussionThread.Thread_Title, DiscussionThread.Thread_content, \
+#                       DiscussionThread.User_id, DiscussionThread.Forum_id FROM DiscussionThread \
+#                         JOIN DiscussionForum ON DiscussionThread.Forum_id = DiscussionForum.Forum_id \
+#                         WHERE DiscussionForum.Forum_id = '{tr_fid}';")
+#         existing_forum = cur.fetchone()
+#         if existing_forum:
+#             # create thread for forum
+#             cur.execute(f"INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES \
+#                         ('{tr_id}', '{tr_title}', '{tr_content}', '{tr_uid}', '{tr_fid}');")
+#         con.commit()
+#         cur.close()
+#         con.close()
+#         return make_response({'message': 'Discussion thread created'}, 200)
+
+#     except Exception as e:
+#         print(e)
+#         return make_response({'error': 'An error occurred while Creating the thread'}, 500)
+
+
+
+
+@Yvle.route('/make_thread', methods=['POST'])
+def make_thread():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        cur = con.cursor()
+        
+        # get discussio thread from request body
+        content = request.json
+        
+        tr_id = content['Thread ID']
+        tr_title = content['Thread Title']
+        tr_content = content['Thread Content']
+        tr_uid = content['User ID']
+        tr_fid = content['Forum ID']
+
+        # create thread for forum
+        cur.execute(f"INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES \
+                    ('{tr_id}', '{tr_title}', '{tr_content}', '{tr_uid}', '{tr_fid}');")
+        con.commit()
+        cur.close()
+        con.close()
+        return make_response({'message': 'Discussion thread created'}, 200)
+
+    except Exception as e:
+        print(e)
+        return make_response({'error': 'An error occurred while Creating the thread'}, 500)
