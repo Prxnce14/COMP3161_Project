@@ -515,3 +515,83 @@ def make_thread():
     except Exception as e:
         print(e)
         return make_response({'error': 'An error occurred while Creating the thread'}, 500)
+
+
+
+
+@Yvle.route('/Create_Course_cont', methods=['POST'])
+def Create_Course_cont():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        cur = con.cursor()
+        
+        # get discussio thread from request body
+        content = request.json
+        
+        cont_id = content['Content ID']
+        cont_name = content['Content Name']
+        c_id = content['Course ID']
+        cont_type = content['Content Type']
+        lect_id = content['Lecture ID']
+        sect_id = content['Section ID']
+        t_list = []
+
+        # check if content exists
+        cur.execute(f"SELECT CourseContent.Content_id, CourseContent.Content_name, CourseContent.Course_id,\
+                     CourseContent.Content_type, CourseContent.Lecturer_id, CourseContent.Section_id \
+                     FROM CourseContent JOIN Lecturer ON CourseContent.Lecturer_id = Lecturer.Lecturer_id \
+                     WHERE Lecturer.Lecturer_id = '{lect_id}';")
+        existing_forum = cur.fetchone()
+        t_list.append(existing_forum)
+        print(t_list)
+        if t_list == []:
+            #create the course content
+            cur.execute(f'INSERT INTO yvle.CourseContent(Content_id, Content_name, Course_id, Content_type, Lecturer_id, Section_id) VALUES \
+                         ({cont_id}, {cont_name}, {c_id}, {cont_type}, {lect_id}, {sect_id});')
+        else:
+            return make_response({'error': "Content already exists"}, 400)
+        con.commit()
+        cur.close()
+        con.close()
+        return make_response({'message': 'Course content created......'}, 200)
+
+    except Exception as e:
+        print(e)
+        return make_response({'error': 'An error occurred while reading info for course content'}, 500)
+
+
+
+
+@Yvle.route('/get_course_cont/<course_id>', methods = ['GET'])
+def get_course_cont(course_id):
+    try:
+         # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f'SELECT * FROM CourseContent WHERE CourseContent.Course_id = {course_id};')
+        row = cur.fetchone()
+        #customer = {}
+        if row is not None:
+            cont_id, cont_name, c_id, cont_type, lect_id, sect_id = row
+            Content = {}
+            Content['Content ID'] = cont_id
+            Content['Content Name'] = cont_name
+            Content['Course ID'] = c_id
+            Content['Content Type'] = cont_type
+            Content['Lecture ID'] = lect_id
+            Content['Section ID'] = sect_id
+            cur.close()
+            con.close()
+            return make_response(Content, 200)
+        else:
+            return make_response({'error': 'Course content is not found'}, 400)
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
