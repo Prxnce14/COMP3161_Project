@@ -106,7 +106,7 @@ def get_Most_Enrolled():
 
 
 # get top 10 student woth the highest overall average
-@app.route('/Avg_Grade ', methods=['GET'])
+@Yvle.route('/Avg_Grade ', methods=['GET'])
 def get_Avg_Grade ():
     try:
         # connect to database
