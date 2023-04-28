@@ -9,8 +9,8 @@ app = Flask(__name__)
 def get_courses50():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
+        con = mysql.connector.connect(user='project1_user', password='password123',
+                                       host='127.0.0.1',
                                        database='yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Course50")
@@ -35,8 +35,8 @@ def get_courses50():
 def get_student5_orMore():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
+        con = mysql.connector.connect(user='project1_user', password='password123',
+                                       host='127.0.0.1',
                                        database='yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM student5_orMore")
@@ -60,8 +60,8 @@ def get_student5_orMore():
 def get_Lecturer3_orMore():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
+        con = mysql.connector.connect(user='project1_user', password='password123',
+                                       host='127.0.0.1',
                                        database='yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Lecturer3_orMore")
@@ -85,8 +85,8 @@ def get_Lecturer3_orMore():
 def get_Most_Enrolled():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
+        con = mysql.connector.connect(user='project1_user', password='password123',
+                                       host='127.0.0.1',
                                        database='yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Most_Enrolled")
@@ -110,8 +110,8 @@ def get_Most_Enrolled():
 def get_Avg_Grade ():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
+         con = mysql.connector.connect(user='project1_user', password='password123',
+                                       host='127.0.0.1',
                                        database='yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Avg_Grade ")
