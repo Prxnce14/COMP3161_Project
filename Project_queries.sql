@@ -44,7 +44,7 @@ INSERT INTO yvle.DiscussionForum (Forum_id, Forum_name, Course_id) VALUES ('ebb9
 
 INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES ('ce324b16b79a43eb8182bd699b2609e9', 'Name discover issue second girl hit somebody.', 
 'Point him beyond ok president international. Near catch plan if force admit ever. Head your sort like. Wrong sometimes difficult statement.
-Ahead rate charge. Executive drug shake still get trial drive.', '56153', 'ebb9f2dd-f7c1-4c42-8894-80f7ce62acd8');
+Ahead rate charge. Executive drug shake still get trial drive.', '10087', 'ebb9f2dd-f7c1-4c42-8894-80f7ce62acd8');
 
 -- Insert query for Discussion thread;
 
@@ -52,7 +52,7 @@ INSERT INTO yvle.CalendarEvent (Event_id, Event_name, Event_description, Event_d
 ('45df727c-8832-4743-89f9-c53ce9df9d3d', 'Decentralized disintermediate portal', 'Auditing taught by Richard Dennis', '2023-11-20', 'ACCT501');
 
 INSERT INTO yvle.Section (Section_id, Section_title, Course_id) VALUES 
-('a1f4bcf6-e472-401d-9546-d87fd19e9aeb', 'Organized demand-driven matrices', 'ACCT501');
+('a1f4bcf6-e472-401d-9546-d87fd19e9aeb', 'Organized demand-driven matrices', 'ARTS500');
 
 
 INSERT INTO yvle.SectionItem (Item_id, Item_name, Item_type, Item_url, Section_id) VALUES 
@@ -60,7 +60,7 @@ INSERT INTO yvle.SectionItem (Item_id, Item_name, Item_type, Item_url, Section_i
 
 
 INSERT INTO yvle.CourseContent(Content_id, Content_name, Course_id, Content_type, Lecturer_id, Section_id) VALUES 
-('7233ecea-1ac5-4330-8b49-0e5c82665a0b', 'https://dummyimage.com/322x28', 'ACCT501', 'image', '8762052873', 'a1f4bcf6-e472-401d-9546-d87fd19e9aeb');
+('7233ecea-1ac5-4330-8b49-0e5c82665a0b', 'https://dummyimage.com/322x28', 'ARTS500', 'image', '8762052873', 'a1f4bcf6-e472-401d-9546-d87fd19e9aeb');
 
 
 INSERT INTO yvle.Assignment (Assignment_id, Assignment_url, Course_id) VALUES
@@ -89,40 +89,123 @@ SELECT course.Course_id, course.Course_Name FROM course JOIN Lecturer ON course.
 WHERE Lecturer.User_id = 51772;
 
 
+INSERT INTO yvle.Course (course_id, Course_Name, Course_admin) VALUES ('BIOL610', 'Evolutionary Biology', 16112);
+
+
+INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('8762052873', 10087, 'ARTS500');
+
+
+INSERT INTO yvle.Section (Section_id, Section_title, Course_id) VALUES ('3acae0ec-c41a-4426-a747-766af4d24f4e', 'Cross-platform multimedia array', 'ACCT501');
+
+INSERT INTO yvle.Section (Section_id, Section_title, Course_id) VALUES ('8cb7a0a3-1376-4ea6-8f54-ccc9c059af94', 'Multi-channeled demand-driven protocol', 'WGS401');
+
+
+SELECT  CourseContent.Lecturer_id FROM CourseContent JOIN Lecturer ON CourseContent.Lecturer_id = Lecturer.Lecturer_id 
+WHERE Lecturer.Lecturer_id = 8762052873;
+
+SELECT Lecturer_id FROM Lecturer WHERE Lecturer.Lecturer_id = 8762052873;
+
+
+INSERT INTO yvle.Assignment (Assignment_id, Assignment_url, Course_id) VALUES 
+('0a2bd463-409a-473b-90e3-fa6700a812cd', 'https://www.dorsey.com/', 'ARTS500');
+
+INSERT INTO yvle.Assignment (Assignment_id, Assignment_url, Course_id) VALUES 
+('6c8a99e6-ab0f-43f1-8c28-52061e1e1ad5', 'https://www.thompson.com/', 'WGS401');
+
+
+SELECT * FROM Assignment WHERE Assignment.Assignment_id = "0a2bd463-409a-473b-90e3-fa6700a812cd";
+
+
+INSERT INTO yvle.Grade (Grade_id, Letter_grade, Grade, Assignment_id, Student_id) VALUES 
+('702e90e7-2ebe-4c22-aab2-f302e0af0eab', 'C', '73', '0a2bd463-409a-473b-90e3-fa6700a812cd', '6601440766');
+
+INSERT INTO yvle.Grade (Grade_id, Letter_grade, Grade, Assignment_id, Student_id) VALUES 
+('441057f6-c117-4dd3-b5bd-7d17be0b6adc', 'B', '83', '6c8a99e6-ab0f-43f1-8c28-52061e1e1ad5', '6601440766');
+
+DELETE FROM Grade WHERE Grade.Assignment_id = '8a175bc4-64a6-4269-8756-6c97f8c2c950';
+
+SELECT Student_id FROM Student WHERE Student.Student_id = '6601440766' ;
+
+SELECT Grade FROM Grade WHERE Student_id = '6601440766';
+SELECT AVG(Grade) AS Grade_Average FROM Grade WHERE Student_id = '6601440766';
+
+SELECT Grade.Student_id, Student.Name, AVG(Grade) AS Grade_Average  FROM Grade
+JOIN Student ON Grade.Student_id = Student.Student_id WHERE Student.Student_id = '6601440766'
+GROUP BY Grade.Student_id;
+
+SELECT DiscussionForum.Forum_id FROM DiscussionForum
+WHERE DiscussionForum.Forum_id = '01dd892a-a93e-4802-b874-3c77ea77e6a0';
+
+
+INSERT INTO yvle.DiscussionForum (Forum_id, Forum_name, Course_id) VALUES 
+('01dd892a-a93e-4802-b874-3c77ea77e6a0', 'labs', 'ACCT501');
+
+INSERT INTO yvle.DiscussionForum (Forum_id, Forum_name, Course_id) VALUES 
+('41fac694-27d2-4df7-aa16-bfbf607fe40f', 'Quiz', 'BIOL610');
+
+INSERT INTO yvle.DiscussionForum (Forum_id, Forum_name, Course_id) VALUES 
+('2bb9283c-cec0-493b-a56c-ad0c68440d56', 'midsemesters', 'WGS401');
+
+
+INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES 
+('e0176f8bbe24472fa3b59ed5baed7d9c', 'Daughter west past recently win stop. Wish yeah story drive.
+Small billion always simply.', 'News enjoy fight. Us instead agree same data professional true. Call since people give meeting. 
+Around now suddenly really realize person.', '10497', '01dd892a-a93e-4802-b874-3c77ea77e6a0');
+
+
+
 CREATE VIEW Course50 AS 
-SELECT Course_id, COUNT(*) AS num_students
-FROM Enrol
-GROUP BY Course_id
+SELECT course_id, COUNT(*) AS num_students
+FROM enrol
+GROUP BY course_id
 HAVING COUNT(*) > 50;
 
+CREATE VIEW Student5_orMore AS
+SELECT student_id, COUNT(*) AS num_courses
+FROM enrol
+GROUP BY student_id
+HAVING COUNT(*) >= 5;
+
+CREATE VIEW Lecturer3_orMore AS
+SELECT Lecturer_id, COUNT(*) AS num_courses
+FROM Teach_connect
+GROUP BY lecturer_id
+HAVING COUNT(*) >= 3;
+
+CREATE VIEW Most_Enrolled AS
+SELECT course_id, COUNT(*) AS num_students
+FROM enrol
+GROUP BY course_id
+ORDER BY num_students DESC
+LIMIT 10;
+
+CREATE VIEW Avg_Grade AS
+SELECT student_id, AVG(Grade) AS avg_grade
+FROM grade
+GROUP BY student_id
+ORDER BY avg_grade DESC
+LIMIT 10;
 
 
-
-
-
-
-
-
-
-DROP TABLE User;
-DROP TABLE Account;
-DROP TABLE Member;
-DROP TABLE Student;
-DROP TABLE Lecturer;
-DROP TABLE Course;
-DROP TABLE DiscussionForum;
-DROP TABLE DiscussionThread;
-DROP TABLE CalendarEvent;
-DROP TABLE Section;
-DROP TABLE SectionItem;
-DROP TABLE CourseContent;
-DROP TABLE Assignment; 
-DROP TABLE Grade;
-DROP TABLE Department;
-DROP TABLE  Program;
-DROP TABLE Enrol;
-DROP TABLE Must_take;
-DROP TABLE Teach_connect;
+-- DROP TABLE User;
+-- DROP TABLE Account;
+-- DROP TABLE Member;
+-- DROP TABLE Student;
+-- DROP TABLE Lecturer;
+-- DROP TABLE Course;
+-- DROP TABLE DiscussionForum;
+-- DROP TABLE DiscussionThread;
+-- DROP TABLE CalendarEvent;
+-- DROP TABLE Section;
+-- DROP TABLE SectionItem;
+-- DROP TABLE CourseContent;
+-- DROP TABLE Assignment; 
+-- DROP TABLE Grade;
+-- DROP TABLE Department;
+-- DROP TABLE  Program;
+-- DROP TABLE Enrol;
+-- DROP TABLE Must_take;
+-- DROP TABLE Teach_connect;
 
 
 
@@ -245,6 +328,7 @@ FOREIGN KEY (Course_id) REFERENCES Course(Course_id)
 CREATE TABLE Grade(
 Grade_id varchar(255) NOT NULL,
 Letter_grade varchar(5) NOT NULL,
+Grade INT NOT NULL,
 Assignment_id varchar(255) NOT NULL,
 Student_id BIGINT NOT NULL,
 PRIMARY KEY (Grade_id),

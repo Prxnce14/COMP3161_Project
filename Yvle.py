@@ -443,49 +443,6 @@ def get_disc_thread(for_id):
 
 
 
-
-# @Yvle.route('/Create_thread', methods=['POST'])
-# def Create_thread():
-#     try:
-#         # connect to database
-#         con = mysql.connector.connect(user='project1_user', password ='password123',
-#                                     host = '127.0.0.1',
-#                                     database = 'Yvle')
-#         cur = con.cursor()
-        
-#         # get discussio thread from request body
-#         content = request.json
-        
-#         tr_id = content['Thread ID']
-#         tr_title = content['Thread Title']
-#         tr_content = content['Thread Content']
-#         tr_uid = content['User ID']
-#         tr_fid = content['Forum ID']
-
-
-#         # check if forum exists
-
-#         cur.execute(f"SELECT DiscussionThread.Thread_id, DiscussionThread.Thread_Title, DiscussionThread.Thread_content, \
-#                       DiscussionThread.User_id, DiscussionThread.Forum_id FROM DiscussionThread \
-#                         JOIN DiscussionForum ON DiscussionThread.Forum_id = DiscussionForum.Forum_id \
-#                         WHERE DiscussionForum.Forum_id = '{tr_fid}';")
-#         existing_forum = cur.fetchone()
-#         if existing_forum:
-#             # create thread for forum
-#             cur.execute(f"INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES \
-#                         ('{tr_id}', '{tr_title}', '{tr_content}', '{tr_uid}', '{tr_fid}');")
-#         con.commit()
-#         cur.close()
-#         con.close()
-#         return make_response({'message': 'Discussion thread created'}, 200)
-
-#     except Exception as e:
-#         print(e)
-#         return make_response({'error': 'An error occurred while Creating the thread'}, 500)
-
-
-
-
 @Yvle.route('/make_thread', methods=['POST'])
 def make_thread():
     try:
@@ -504,9 +461,16 @@ def make_thread():
         tr_uid = content['User ID']
         tr_fid = content['Forum ID']
 
-        # create thread for forum
-        cur.execute(f"INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES \
-                    ('{tr_id}', '{tr_title}', '{tr_content}', '{tr_uid}', '{tr_fid}');")
+        #check if the forum exists
+        cur.execute(f"SELECT DiscussionForum.Forum_id FROM DiscussionForum \
+                    WHERE DiscussionForum.Forum_id = '{tr_fid}';")
+        row = cur.fetchone()
+        if row is not None:
+            # create thread for forum
+            cur.execute(f"INSERT INTO yvle.DiscussionThread (Thread_id, Thread_Title, Thread_content, User_id, Forum_id) VALUES \
+                        ('{tr_id}', '{tr_title}', '{tr_content}', '{tr_uid}', '{tr_fid}');")
+        else:           
+            return make_response({'error': "Discussion forum does not exist"}, 400)
         con.commit()
         cur.close()
         con.close()
@@ -537,26 +501,22 @@ def Create_Course_cont():
         cont_type = content['Content Type']
         lect_id = content['Lecture ID']
         sect_id = content['Section ID']
-        t_list = []
 
         # check if content exists
-        cur.execute(f"SELECT CourseContent.Content_id, CourseContent.Content_name, CourseContent.Course_id,\
-                     CourseContent.Content_type, CourseContent.Lecturer_id, CourseContent.Section_id \
-                     FROM CourseContent JOIN Lecturer ON CourseContent.Lecturer_id = Lecturer.Lecturer_id \
-                     WHERE Lecturer.Lecturer_id = '{lect_id}';")
-        existing_forum = cur.fetchone()
-        t_list.append(existing_forum)
-        print(t_list)
-        if t_list == []:
+        cur.execute(f"SELECT Lecturer_id FROM Lecturer WHERE Lecturer.Lecturer_id = '{lect_id}';")
+        row = cur.fetchone()
+        if row is not None:
             #create the course content
-            cur.execute(f'INSERT INTO yvle.CourseContent(Content_id, Content_name, Course_id, Content_type, Lecturer_id, Section_id) VALUES \
-                         ({cont_id}, {cont_name}, {c_id}, {cont_type}, {lect_id}, {sect_id});')
-        else:
+            cur.execute(f"INSERT INTO yvle.CourseContent(Content_id, Content_name, Course_id, Content_type, Lecturer_id, Section_id) VALUES \
+                         ('{cont_id}', '{cont_name}', '{c_id}', '{cont_type}', '{lect_id}', '{sect_id}');")
+        else:            
             return make_response({'error': "Content already exists"}, 400)
+
+        
         con.commit()
         cur.close()
         con.close()
-        return make_response({'message': 'Course content created......'}, 200)
+        return make_response({'message': 'Course content created'}, 200)
 
     except Exception as e:
         print(e)
@@ -595,3 +555,242 @@ def get_course_cont(course_id):
     
     except Exception as e:
         return make_response({'error': str(e)}, 400)
+    
+
+
+
+@Yvle.route('/student_assignment', methods=['POST'])
+def student_assignment():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        cur = con.cursor()
+        
+        # get discussio thread from request body
+        content = request.json
+        
+        assign_id = content['Assignment ID']
+        assign_url = content['Assignment URL']
+        c_id = content['Course ID']
+
+        # submit assignment for student
+        cur.execute(f"INSERT INTO yvle.Assignment (Assignment_id, Assignment_url, Course_id) VALUES \
+                    ('{assign_id}', '{assign_url}', '{c_id}');")
+        con.commit()
+        cur.close()
+        con.close()
+        return make_response({'message': 'Assignment Succesfully submitted'}, 200)
+
+    except Exception as e:
+        print(e)
+        return make_response({'error': "An error occurred while submitting the student's assignment"}, 500)
+
+
+
+@Yvle.route('/student_grade', methods=['POST'])
+def student_grade():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        cur = con.cursor()
+        
+        # get discussio thread from request body
+        content = request.json
+        
+        g_id = content['Grade ID']
+        l_grade = content['Letter Grade']
+        grade = content['Grade']
+        assign_id = content['Assignment ID']
+        stud_id = content['Student ID']
+
+        cur.execute(f"SELECT Student_id FROM Student WHERE Student.Student_id = '{stud_id}' ;")
+        row = cur.fetchone()
+        if row is not None:
+            # submit assignment for student
+            cur.execute(f"INSERT INTO yvle.Grade (Grade_id, Letter_grade, Grade, Assignment_id, Student_id) VALUES \
+                        ('{g_id}', '{l_grade}', '{grade}', '{assign_id}', '{stud_id}');")
+        else:            
+            return make_response({'error': "Student does not exists"}, 400)
+            
+            
+        con.commit()
+        cur.close()
+        con.close()
+        return make_response({'message': 'Assignment grade succesfully submitted'}, 200)
+
+    except Exception as e:
+        print(e)
+        return make_response({'error': "An error occurred while submitting the student's assignment grade"}, 500)
+
+
+
+@Yvle.route('/get_final_avg/<stud_id>', methods = ['GET'])
+def get_final_avg(stud_id):
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        #this creates a cursor
+        cur = con.cursor()
+        #string formating
+        cur.execute(f"SELECT Grade.Student_id, Student.Name, AVG(Grade) AS Grade_Average FROM Grade \
+                    JOIN Student ON Grade.Student_id = Student.Student_id WHERE Student.Student_id = '{stud_id}'\
+                    GROUP BY Grade.Student_id;")
+        row = cur.fetchone()
+        #customer = {}
+        if row is not None:
+            stud_id, stud_name, avg, = row
+            Content = {}
+            Content['Student ID'] = stud_id
+            Content['Student Name'] = stud_name
+            Content['Grade Average'] = avg
+        
+            cur.close()
+            con.close()
+            return make_response(Content, 200)
+        else:
+            return make_response({'error': 'Could not load student Average '}, 400)
+    
+    except Exception as e:
+        return make_response({'error': str(e)}, 400)
+    
+
+
+###########################################################################################    
+
+
+@Yvle.route('/courses50', methods=['GET'])
+def get_courses50():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
+        
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM Course50")
+        course_list = []
+        for course_id, num_students in cursor:
+            course = {}
+            course['course_id'] = course_id
+            course['num_students'] = num_students
+            course_list.append(course)
+        cursor.close()
+        con.close()
+        return make_response(jsonify(course_list), 200)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retreiving this view'}), 500)
+
+
+#get all student that does more than 5 courses
+
+@Yvle.route('/student5_orMore', methods=['GET'])
+def get_student5_orMore():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='admin', password='password',
+                                       host='localhost',
+                                       database='yvle')
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM student5_orMore")
+        student_list = []
+        for student_id, num_courses in cursor:
+            student = {}
+            student['student_id'] = student_id
+            student['num_courses'] = num_courses
+            student_list.append(student)
+        cursor.close()
+        con.close()
+        return make_response(jsonify(student_list), 200)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retreiving this view'}), 500)
+
+
+#get all lectures that teach 3 or more courses 
+@Yvle.route('/Lecturer3_orMore', methods=['GET'])
+def get_Lecturer3_orMore():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='admin', password='password',
+                                       host='localhost',
+                                       database='yvle')
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM Lecturer3_orMore")
+        lecturer_list = []
+        for Lecturer_id, num_courses in cursor:
+            lecturer = {}
+            lecturer['Lecturer_id'] = Lecturer_id
+            lecturer['num_courses'] = num_courses
+            lecturer_list.append(lecturer)
+        cursor.close()
+        con.close()
+        return make_response(jsonify(lecturer_list), 200)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retreiving this view'}), 500)
+
+# get the 10 most enrolled courses
+
+@Yvle.route('/Most_Enrolled', methods=['GET'])
+def get_Most_Enrolled():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='admin', password='password',
+                                       host='localhost',
+                                       database='yvle')
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM Most_Enrolled")
+        enrol_list = []
+        for course_id, num_students in cursor:
+            enrol = {}
+            enrol['course_id'] = course_id
+            enrol['num_courses'] = num_students
+            enrol_list.append(enrol)
+        cursor.close()
+        con.close()
+        return make_response(jsonify(enrol_list), 200)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retreiving this view'}), 500)
+
+
+# get top 10 student woth the highest overall average
+@Yvle.route('/Avg_Grade ', methods=['GET'])
+def get_Avg_Grade ():
+    try:
+        # connect to database
+        con = mysql.connector.connect(user='admin', password='password',
+                                       host='localhost',
+                                       database='yvle')
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM Avg_Grade ")
+        student_list = []
+        for student_id, avg_grade in cursor:
+            student = {}
+            student['student_id'] = student_id
+            student['avg_grade'] = avg_grade
+            student_list.append(student)
+        cursor.close()
+        con.close()
+        return make_response(jsonify(student_list), 200)
+
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': 'An error occurred while retreiving this view'}), 500)
+
+
+
+
+if __name__ == '__main__':
+    Yvle.run(port=5000)
