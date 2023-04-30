@@ -142,27 +142,27 @@ def register_course():
         username = content.get('Student ID') or content.get('Lecturer ID')
         c_id = content['Course ID']
         user_id = content['User ID']
-        cur.execute("SELECT * FROM course WHERE Course_id = %s", (c_id,))
+        cur.execute(f"SELECT * FROM course WHERE Course_id = %s", (c_id,))
         course = cur.fetchone()
         if not course:
             return make_response(jsonify({'error': 'Course not found'}), 404)
-        cur.execute("SELECT * FROM Account WHERE User_id = %s", (user_id,))
+        cur.execute(f"SELECT * FROM Account WHERE User_id = %s", (user_id,))
         account = cur.fetchone()
         if not account:
             return make_response(jsonify({'error': 'Invalid user ID or user type'}), 401)
         if account[1] == 'Lecturer':
-            cur.execute("SELECT * FROM teach_connect WHERE Course_id = %s", (c_id,))
+            cur.executef(f"SELECT * FROM teach_connect WHERE Course_id = %s", (c_id,))
             lecturer = cur.fetchone()
             if lecturer:
                 return make_response(jsonify({'error': 'Another lecturer is already assigned to the course'}), 409)
-            cur.execute("INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES (%s, %s, %s)", (username, user_id, c_id))
-            cur.execute("INSERT INTO yvle.teach_connect (Lecturer_id, Course_id) VALUES (%s, %s)", (username, c_id))
+            cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{username}', '{user_id}', '{c_id}');")
+            cur.execute(f"INSERT INTO yvle.teach_connect (Lecturer_id, Course_id) VALUES ('{username}', '{c_id}');")
         elif account[1] == 'Student':
             cur.execute("SELECT * FROM Enrol WHERE Course_id = %s AND Student_id = %s", (c_id, username))
             existing_registration = cur.fetchone()
             if existing_registration:
                 return make_response(jsonify({'error': 'Student already registered for the course'}), 409)
-            cur.execute("INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES (%s, %s)", (username, c_id))
+            cur.execute(f"INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES ('{username}', '{c_id}');")
             cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{username}', '{user_id}', '{c_id}');")
 
         con.commit()
