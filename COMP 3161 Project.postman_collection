@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "773c2a93-4292-4003-a76e-cca91cee7158",
+		"name": "COMP 3161 Pro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26312331"
+	},
+	"item": [
+		{
+			"name": "tester",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/tester",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tester"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n    \"Id_Number\": 6200000,\r\n    \"Username\": \"Nicholas\",\r\n    \"Password\": \"my_password14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/register_user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"register_user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_login",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user_login/6200000/'my_password14'",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user_login",
+						"6200000",
+						"'my_password14'"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create course",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"Course_id\": \"REACT1000\",\r\n    \"Course_name\": \"Welcome to React\",\r\n    \"Admin_id\": 56152\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/add_course",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"add_course"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "retrieve courses",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_courses",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_courses-student",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_stud_courses/'6100004432'",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_stud_courses",
+						"'6100004432'"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_courses_lecturer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_lec_courses/51772",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_lec_courses",
+						"51772"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register  Course",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"Course ID\": \"PYTH1000\",\r\n    \"Student ID\": \" \",\r\n    \"Name\": \"Kenmore Joiles\",\r\n    \"Lecturer ID\": \"8102237614\",\r\n    \"User ID\": \"51772\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/register_course",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"register_course"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get members",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_members/ACCT301",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_members",
+						"ACCT301"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Calendar",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Calender Event for a particular student via cousrse",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_cevent_stud/'6100140325'/'2024-03-15'",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_cevent_stud",
+						"'6100140325'",
+						"'2024-03-15'"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_cal_event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n    \"Course Id\": \"COMP3161\",\r\n    \"Event Date\": \"2024-02-27\",\r\n    \"Event Description\": \"The 48 Laws of Power\",\r\n    \"Event ID\": \"45cf727e-8832-4743-89f9-c53ce9df9d3d\",\r\n    \"Event Name\": \"Loud and Proud\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/Create_cal_event",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"Create_cal_event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_discussion forum",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_dsic_forums/ACCT501",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_dsic_forums",
+						"ACCT501"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_Discussion forum",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n        \"Course ID\": \"COMP3161\",\r\n        \"Forum ID\": \"16a949cb-7134-4f2b-9673-19c423edc049\",\r\n        \"Forum Name\": \"midsemesters\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/Create_forum",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"Create_forum"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_discussion threads for forum",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/get_disc_thread/\"16a949cb-7134-4f2b-9673-19c423edc049\"",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"get_disc_thread",
+						"\"16a949cb-7134-4f2b-9673-19c423edc049\""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create_discussion thread",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n    \r\n    \"Forum ID\": \"41fac694-27d2-4df7-aa16-bfbf607fe40f\",\r\n    \"Thread Content\": \"Write choice alone choice worker. Serious probably green how.Tough from fact scene. Page second suggest nature realize no. Account police society meet able about check. Food name friend debate.\",\r\n    \"Thread ID\": \"c70533bcbcd84fb18d2f54eda1064aff\",\r\n    \"Thread Title\": \"Push yes total network meeting especially bit.\",\r\n    \"User ID\": 11072\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/make_thread",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"make_thread"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create _course_content",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"Content ID\": \"6cf23362-0e42-4f43-9676-ca568443f152\",\r\n    \"Content Name\": \"https://picsum.photos/650/607\",\r\n    \"Content Type\": \"image\",\r\n    \"Course ID\": \"COMP3161\",\r\n    \"Lecture ID\": 8386875554,\r\n    \"Section ID\": \"60e2d5f7-0ea6-40d6-962c-32c9a61201ae\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/Create_Course_cont",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"Create_Course_cont"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_course_content",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Submit_student _assignment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"Assignment ID\": \"0a2bd463-409a-473b-90e3-fa6700a812cd\",\r\n    \"Assignment URL\": \"https://www.dorsey.com/\",\r\n    \"Course ID\": \"ARTS500\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/student_assignment",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"student_assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit_student_grade",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Grade ID\": \"0353c8b0-f138-41d1-9678-8fb83d827f0c\",\r\n    \"Letter Grade\": \"F\",\r\n    \"Grade\": \"0\",\r\n    \"Assignment ID\": \"8a175bc4-64a6-4269-8756-6c97f8c2c950\",\r\n    \"Student ID\": \"6601440765\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/student_grade",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"student_grade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Students_Average",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get 50 / more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get_students_5 or more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get_lectures_ that teach 3 or more",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get_most_enrolled",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "get_students with highest overall avg",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
