@@ -66,6 +66,18 @@ Postman- Post Requesuest- Body - Raw - Json
 }
 
 
+sample data for Register Course
+
+
+{
+
+    "Course ID": "PYTH1000",
+    "Student ID": "6100026654",
+    "Name": "Nicholas Joiles",
+    "Lecturer ID": "",
+    "User ID": "51772"
+
+}
 
 
 

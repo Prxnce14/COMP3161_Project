@@ -38,7 +38,7 @@ def register_user():
 
 #User Login
 @Yvle.route('/user_login/<u_id>/<pass_word>', methods=['GET']) #
-def user_login(u_id, pass_word): #<pass_word>
+def user_login(u_id, pass_word): 
     try:
         con = mysql.connector.connect(user='project1_user', password ='password123',
                                     host = '127.0.0.1',
@@ -46,7 +46,7 @@ def user_login(u_id, pass_word): #<pass_word>
         #this creates a cursor
         cur = con.cursor()
         #string formating
-        cur.execute(f'SELECT * FROM user WHERE user_id = {u_id} HAVING Password = {pass_word};') 
+        cur.execute(f"SELECT * FROM user WHERE user_id = '{u_id}' HAVING Password = '{pass_word}';") 
         row = cur.fetchone()
          # If the user exists in the database and the password is correct, log them in
         #customer = {}
@@ -58,7 +58,7 @@ def user_login(u_id, pass_word): #<pass_word>
             user['Password'] = pass_w
             cur.close()
             con.close()
-            return make_response('User succesfully logged in', 200)
+            return make_response(user, 200)
         else:
             return make_response({'error':  'Invalid Id number or password'})       
 
@@ -77,19 +77,19 @@ def add_course():
         #this cretaes a cursor
         cur = con.cursor()
 
-        # check if user is an admin
-        # auth_header = request.headers.get('Authorization')
-        # if auth_header != 'Bearer admin_token':
-        #     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
-
         # get course details from request body
         content = request.json
         c_id = content['Course_id']
         c_name = content['Course_name']
         Adm_id = content['Admin_id']
 
-        # insert course into database
-        cur.execute(f"INSERT INTO Course (Course_id, Course_Name, Course_admin) VALUES ('{c_id}', '{c_name}', '{Adm_id}')")
+        cur.execute(f"SELECT * FROM Account WHERE user_id = '{Adm_id}' and Account.Account_type = 'Admin';")
+        row = cur.fetchone()
+        if row is not None:
+            # insert course into database
+            cur.execute(f"INSERT INTO Course (Course_id, Course_Name, Course_admin) VALUES ('{c_id}', '{c_name}', '{Adm_id}')")
+        else:
+            return make_response({'Error': 'This Account is not of type Admin'})
         con.commit()
         cur.close()
         con.close()
@@ -99,8 +99,6 @@ def add_course():
         print(e)
         return make_response({'error': str(e)}, 400) 
     
-        #return make_response(jsonify({'error': 'An error occurred while creating the course'}), 500)
-
 
 
 @Yvle.route('/get_courses', methods=['GET'])
@@ -180,6 +178,7 @@ def get_lec_courses(lec_id):
     
     
 @Yvle.route('/register_course', methods=['POST'])
+
 def register_course():
     try:
         # connect to database
@@ -187,46 +186,58 @@ def register_course():
                                     host = '127.0.0.1',
                                     database = 'Yvle')
         cur = con.cursor()
-        
-        # get course id from request body
+
+        # my_list = []
         content = request.json
-        
-        stud_name = content['Student Name']
-        stud_id = content['Student ID']
+        username = content.get('Student ID') 
+        lec_id = content['Lecturer ID']
         c_id = content['Course ID']
-        adm_id = content['Admin ID']
+        user_id = content['User ID']
+        name = content['Name']
 
-
-        # check if course exists
-        cur.execute(f"SELECT * FROM course WHERE course.Course_id = '{c_id}'")
+        cur.execute(f"SELECT * FROM course WHERE Course_id = %s", (c_id,))
         course = cur.fetchone()
         if not course:
             return make_response(jsonify({'error': 'Course not found'}), 404)
+        cur.execute(f"SELECT * FROM Account WHERE User_id = %s", (user_id,))
+        account = cur.fetchone()
+        # my_list.append(account)
+        # print(my_list[0])
+        print(lec_id)
 
-        cur.execute(f"SELECT * FROM Student JOIN Enrol on Student.Student_id = Enrol.Student_id JOIN \
-                        course on course.Course_id = Enrol.Course_id where Student.Student_id = '{stud_id}' and \
-                        course.Course_id = '{c_id}'")
-        existing_registration = cur.fetchone()
-        if existing_registration:
-            return make_response(jsonify({'error': 'Student already registered for the course'}), 409)
-        else :
-
-            # register student for the course
-            cur.execute(f"INSERT INTO yvle.Student (Student_id, Name, User_id) VALUES ('{stud_id}', '{stud_name}', '{adm_id}');")
-
-            cur.execute(f"INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES ('{stud_id}', '{c_id}');")
-
-            cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{stud_id}', '{adm_id}', '{c_id}');")
+        if account is None:
+            return make_response(jsonify({'error': 'Invalid user ID or user type'}), 401)
+        print("me")
+        if lec_id.startswith('8'):
+            cur.execute(f"SELECT * FROM teach_connect WHERE Course_id = '{c_id}';")
+            print("hi")
+            lecturer = cur.fetchone()
+            if lecturer is not None:
+                return make_response(jsonify({'error': 'Another lecturer is already assigned to the course'}), 409)
+            else:
+                cur.execute(f"INSERT INTO yvle.Lecturer (Lecturer_id, Name, User_id) VALUES ('{lec_id}', '{name}', '{user_id}');")
+                cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{lec_id}', '{user_id}', '{c_id}');")
+                cur.execute(f"INSERT INTO yvle.Teach_connect (Course_id, Lecturer_ID) VALUES ('{c_id}', '{lec_id}');")
+                print("bye")
+        elif username.startswith('6'):
+            cur.execute("SELECT * FROM Enrol WHERE Course_id = %s AND Student_id = %s", (c_id, username))
+            existing_registration = cur.fetchone()
+            if existing_registration is not None:
+                return make_response(jsonify({'error': 'Student already registered for the course'}), 409)
+            else:
+                cur.execute(f"INSERT INTO yvle.Student (Student_id, Name, User_id) VALUES ('{username}', '{name}', '{user_id}');")
+                cur.execute(f"INSERT INTO yvle.Enrol (Student_id, Course_id) VALUES ('{username}', '{c_id}');")
+                cur.execute(f"INSERT INTO yvle.Member (Member_id, User_id, Course_id) VALUES ('{username}', '{user_id}', '{c_id}');")
 
         con.commit()
         cur.close()
         con.close()
-        return make_response(jsonify({'message': 'Student Succesfully registered and enrolled'}), 201)
 
+        return make_response(jsonify({'success': True}), 200)
+    
     except Exception as e:
         print(e)
-        return make_response(jsonify({'error': 'An error occurred while registering for the course'}), 500)
-
+        return make_response({'error': 'This User has already been registered'}, 400)
 
 
 
@@ -695,11 +706,11 @@ def get_courses50():
 def get_student5_orMore():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
-                                       database='yvle')
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
         cursor = con.cursor()
-        cursor.execute(f"SELECT * FROM student5_orMore")
+        cursor.execute(f"SELECT * FROM Student5_orMore ")
         student_list = []
         for student_id, num_courses in cursor:
             student = {}
@@ -720,9 +731,9 @@ def get_student5_orMore():
 def get_Lecturer3_orMore():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
-                                       database='yvle')
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Lecturer3_orMore")
         lecturer_list = []
@@ -745,9 +756,9 @@ def get_Lecturer3_orMore():
 def get_Most_Enrolled():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
-                                       database='yvle')
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Most_Enrolled")
         enrol_list = []
@@ -770,9 +781,9 @@ def get_Most_Enrolled():
 def get_Avg_Grade ():
     try:
         # connect to database
-        con = mysql.connector.connect(user='admin', password='password',
-                                       host='localhost',
-                                       database='yvle')
+        con = mysql.connector.connect(user='project1_user', password ='password123',
+                                    host = '127.0.0.1',
+                                    database = 'Yvle')
         cursor = con.cursor()
         cursor.execute(f"SELECT * FROM Avg_Grade ")
         student_list = []

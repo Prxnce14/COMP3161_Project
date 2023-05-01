@@ -153,6 +153,48 @@ Small billion always simply.', 'News enjoy fight. Us instead agree same data pro
 Around now suddenly really realize person.', '10497', '01dd892a-a93e-4802-b874-3c77ea77e6a0');
 
 
+-- query to run calendar events for a particular course for a particular student
+
+SELECT Student.Student_id, CalendarEvent.Event_date, CalendarEvent.Course_id FROM CalendarEvent JOIN Enrol ON CalendarEvent.Course_id = Enrol.Course_id
+JOIN Student ON Student.Student_id = Enrol.Student_id ;
+
+-- query to run final average
+
+SELECT Grade.Student_id, Student.Name, AVG(Grade) AS Grade_Average FROM Grade 
+JOIN Student ON Grade.Student_id = Student.Student_id 
+GROUP BY Grade.Student_id;
+
+
+SELECT * FROM Lecturer WHERE Lecturer.User_id = 51772;
+
+DELETE FROM LECTURER WHERE Lecturer.User_id = 51772;
+DELETE FROM User WHERE user_id = 51772;
+
+SELECT * FROM User WHERE User_id = 51772;
+
+SELECT * FROM User WHERE User_id = 51772;
+
+
+SELECT * FROM DiscussionThread WHERE DiscussionThread.Forum_id = '7f1c386a-e904-47d1-9ab1-2b4fe693b9vt' ;
+
+SELECT * FROM CourseContent WHERE CourseContent.Course_id =  'PYTH1000' ;
+
+SELECT * FROM Student5_orMore ;
+
+SELECT * FROM Enrol WHERE Course_id = "ANTH501";
+SELECT * FROM Enrol WHERE  Student_id = 6100026654;
+
+SELECT * FROM Member WHERE member_id = 8102237614;
+
+SELECT * FROM Account;
+
+SELECT * FROM Account WHERE Account.User_id Between 51772 AND 59232;
+
+
+
+SELECT * FROM Account WHERE user_id = '56190' and Account.Account_type = 'Admin';
+
+
 
 CREATE VIEW Course50 AS 
 SELECT course_id, COUNT(*) AS num_students
@@ -187,6 +229,7 @@ ORDER BY avg_grade DESC
 LIMIT 10;
 
 
+
 -- DROP TABLE User;
 -- DROP TABLE Account;
 -- DROP TABLE Member;
@@ -205,7 +248,7 @@ LIMIT 10;
 -- DROP TABLE  Program;
 -- DROP TABLE Enrol;
 -- DROP TABLE Must_take;
--- DROP TABLE Teach_connect;
+-- DROP TABLE Teach_connect; 
 
 
 
@@ -254,7 +297,7 @@ Course_id varchar(255) NOT NULL,
 Course_Name varchar(255) NOT NULL,
 Course_admin INT NOT NULL,
 PRIMARY KEY (Course_id),
-FOREIGN KEY (Course_admin) REFERENCES Lecturer(User_id)
+FOREIGN KEY (Course_admin) REFERENCES Account(User_id)
 );
 
 CREATE TABLE DiscussionForum(
